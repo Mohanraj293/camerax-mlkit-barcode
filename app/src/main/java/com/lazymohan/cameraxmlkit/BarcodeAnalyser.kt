@@ -1,26 +1,24 @@
 package com.lazymohan.cameraxmlkit
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
-import android.graphics.Matrix
 import android.graphics.Rect
-import android.graphics.YuvImage
-import android.media.Image
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.processing.SurfaceProcessorNode.In
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 /**
  * Created by Mohanraj R on 17/12/22.
  */
-class BarcodeAnalyser : ImageAnalysis.Analyzer {
+class BarcodeAnalyser(
+  private val coroutineScope: CoroutineScope,
+  private val resultListener: ResultArray,
+) : ImageAnalysis.Analyzer {
   private val options = BarcodeScannerOptions.Builder()
     .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
     .build()
@@ -32,6 +30,7 @@ class BarcodeAnalyser : ImageAnalysis.Analyzer {
   private var bottom: Int = 0
   private var diameter: Int = 0
   private var offset: Int = 0
+  private val results: ArrayList<ScanResultData> = arrayListOf()
 
   @SuppressLint("UnsafeOptInUsageError")
   override fun analyze(image: ImageProxy) {
@@ -52,13 +51,19 @@ class BarcodeAnalyser : ImageAnalysis.Analyzer {
     val cropRect = Rect(left, top, right, bottom)
     val cropped = ImageUtils.rotateAndCrop(bit, image.imageInfo.rotationDegrees, cropRect)
     val inputImage = InputImage.fromBitmap(cropped, image.imageInfo.rotationDegrees)
-    barcode.process(inputImage).addOnSuccessListener { barcodeValue ->
-      barcodeValue.forEach {
-        println("Barcode value -> ${it.rawValue}")
+    coroutineScope.launch {
+      val resultString = barcode.process(inputImage).await()
+      resultString.forEach {
+        if (!results.contains(ScanResultData(it.rawValue.toString()))) {
+          results.add(ScanResultData(it.rawValue.toString()))
+          resultListener.setResult(results, results.size)
+        }
       }
       image.close()
-    }.addOnFailureListener {
-      println("Error Occurred ${it.message}")
     }
+  }
+
+  interface ResultArray {
+    fun setResult(resultArray: ArrayList<ScanResultData>, count: Int)
   }
 }
