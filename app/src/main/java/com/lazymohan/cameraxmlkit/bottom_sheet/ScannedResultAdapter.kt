@@ -1,9 +1,10 @@
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.bottom_sheet
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.lazymohan.cameraxmlkit.ScannedResultAdapter.ViewHolder
+import com.lazymohan.cameraxmlkit.bottom_sheet.ScannedResultAdapter.ViewHolder
 import com.lazymohan.cameraxmlkit.databinding.ItemBarcodeResultBinding
 
 /**
@@ -13,8 +14,10 @@ class ScannedResultAdapter: RecyclerView.Adapter<ViewHolder>() {
 
   private var scanResults = mutableListOf<ScanResultData>()
 
+  @SuppressLint("NotifyDataSetChanged")
   fun setScanResults(scanResultData: MutableList<ScanResultData>) {
-    this.scanResults = scanResultData
+    this.scanResults.clear()
+    this.scanResults.addAll(scanResultData)
     notifyDataSetChanged()
   }
 

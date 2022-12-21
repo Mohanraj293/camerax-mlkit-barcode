@@ -1,4 +1,4 @@
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.utils
 
 /**
  * Created by Mohanraj R on 21/12/22.

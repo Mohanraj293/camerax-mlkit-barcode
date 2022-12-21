@@ -15,7 +15,7 @@
  *
  */
 
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.utils
 
 import android.graphics.Bitmap
 import android.graphics.ImageFormat

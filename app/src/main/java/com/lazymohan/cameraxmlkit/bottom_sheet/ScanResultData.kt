@@ -1,4 +1,4 @@
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.bottom_sheet
 
 /**
  * Created by Mohanraj R on 21/12/22.

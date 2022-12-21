@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.lazymohan.cameraxmlkit.barcode.ActivityCamerax
 import com.lazymohan.cameraxmlkit.databinding.ActivityMainBinding
 
 private const val RESULT_STRING_ARRAY = "resultvalues"
@@ -18,16 +19,16 @@ class MainActivity : AppCompatActivity() {
     setContentView(binding.root)
     val resultLauncher = registerForActivityResult(StartActivityForResult()) {
       if (it.resultCode == Activity.RESULT_OK) {
-        if (it.data != null) {
-          val result = it.data!!.getStringArrayExtra(RESULT_STRING_ARRAY)
-          if (result?.isNotEmpty() == true) {
-            result.forEach { string ->
-              binding.apply {
-                resultView.text = string.toString()
-              }
-            }
-          }
-        }
+        // if (it.data != null) {
+        //   val result = it.data!!.getStringArrayExtra(RESULT_STRING_ARRAY)
+        //   if (result?.isNotEmpty() == true) {
+        //     result.forEach { string ->
+        //       binding.apply {
+        //         resultView.text = string.toString()
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
     binding.scanButton.setOnClickListener {

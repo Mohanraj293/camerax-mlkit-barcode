@@ -17,7 +17,7 @@
         android:theme="@style/Theme.CameraXMlkit"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityCamerax"
+            android:name=".barcode.ActivityCamerax"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

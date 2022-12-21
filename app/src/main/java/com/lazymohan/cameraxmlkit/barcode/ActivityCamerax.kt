@@ -1,7 +1,8 @@
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.barcode
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.lazymohan.cameraxmlkit.R.id
 import com.lazymohan.cameraxmlkit.databinding.ActivityCameraxBinding
 
 class ActivityCamerax : AppCompatActivity() {
@@ -14,7 +15,7 @@ class ActivityCamerax : AppCompatActivity() {
     setContentView(binding.root)
     if (savedInstanceState == null) {
       supportFragmentManager.beginTransaction()
-        .replace(R.id.frame_layout, CameraxFragment.newInstance())
+        .replace(id.frame_layout, CameraxFragment.newInstance())
         .commitNow()
     }
   }

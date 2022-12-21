@@ -1,9 +1,7 @@
-package com.lazymohan.cameraxmlkit
+package com.lazymohan.cameraxmlkit.barcode
 
 import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Color
@@ -24,9 +22,11 @@ import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.lazymohan.cameraxmlkit.BarcodeAnalyser.ResultArray
-import com.lazymohan.cameraxmlkit.databinding.BottomSheetDialogBinding
+import com.lazymohan.cameraxmlkit.utils.CountListener
+import com.lazymohan.cameraxmlkit.R.string
+import com.lazymohan.cameraxmlkit.bottom_sheet.ScanResultData
+import com.lazymohan.cameraxmlkit.barcode.BarcodeAnalyser.ResultArray
+import com.lazymohan.cameraxmlkit.bottom_sheet.ScannedResultBottomSheet
 import com.lazymohan.cameraxmlkit.databinding.FragmentCameraxBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,7 @@ class CameraxFragment : Fragment(), ResultArray {
   private lateinit var binding: FragmentCameraxBinding
   private lateinit var cameraExecutor: ExecutorService
   private lateinit var barcodeAnalyser: BarcodeAnalyser
-  private var bottomSheetDialog: BottomSheet? = null
+  private var bottomSheetDialog: ScannedResultBottomSheet? = null
   private var countListener: CountListener? = null
   private var left: Int = 0
   private var right: Int = 0
@@ -102,10 +102,11 @@ class CameraxFragment : Fragment(), ResultArray {
         override fun surfaceDestroyed(holder: SurfaceHolder) {}
       })
     }
-    binding.tvMultiScan.text = getString(R.string.scanned_items, count)
+    binding.tvMultiScan.text = getString(string.scanned_items, count)
     binding.clMultiScan.setOnClickListener {
       if (results.isNotEmpty()) {
-        bottomSheetDialog = BottomSheet.newInstance()
+        bottomSheetDialog = ScannedResultBottomSheet.newInstance()
+        bottomSheetDialog?.updateResult(results)
         bottomSheetDialog?.show(parentFragmentManager,"barcode")
       } else {
         Toast.makeText(requireContext(), "No scanned items found", Toast.LENGTH_SHORT).show()
@@ -206,8 +207,7 @@ class CameraxFragment : Fragment(), ResultArray {
     resultArray: ArrayList<ScanResultData>,
     count: Int,
   ) {
-    requireActivity().runOnUiThread{
-      bottomSheetDialog?.updateResult(resultArray)
+    requireActivity().runOnUiThread {
       this.results = resultArray
       this.count = count
     }
