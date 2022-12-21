@@ -8,8 +8,8 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import com.lazymohan.cameraxmlkit.ImageUtils
 import com.lazymohan.cameraxmlkit.bottom_sheet.ScanResultData
+import com.lazymohan.cameraxmlkit.utils.ImageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
