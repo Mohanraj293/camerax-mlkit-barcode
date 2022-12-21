@@ -48,7 +48,6 @@ class CameraxFragment : Fragment(), ResultArray {
   private var offset: Int = 0
   private lateinit var canvas: Canvas
   private var results: ArrayList<ScanResultData> = arrayListOf()
-  var count: Int = 0
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -102,7 +101,7 @@ class CameraxFragment : Fragment(), ResultArray {
         override fun surfaceDestroyed(holder: SurfaceHolder) {}
       })
     }
-    binding.tvMultiScan.text = getString(string.scanned_items, count)
+    binding.tvMultiScan.text = getString(string.scanned_items, 0)
     binding.clMultiScan.setOnClickListener {
       if (results.isNotEmpty()) {
         bottomSheetDialog = ScannedResultBottomSheet.newInstance()
@@ -208,8 +207,8 @@ class CameraxFragment : Fragment(), ResultArray {
     count: Int,
   ) {
     requireActivity().runOnUiThread {
+      binding.tvMultiScan.text = getString(string.scanned_items, count)
       this.results = resultArray
-      this.count = count
     }
   }
 }

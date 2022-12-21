@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lazymohan.cameraxmlkit.R.string
@@ -16,6 +17,7 @@ class ScannedResultBottomSheet : BottomSheetDialogFragment() {
   private lateinit var binding: BottomSheetDialogBinding
   private lateinit var adapter: ScannedResultAdapter
   private var results = arrayListOf<ScanResultData>()
+
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -31,8 +33,11 @@ class ScannedResultBottomSheet : BottomSheetDialogFragment() {
   ) {
     super.onViewCreated(view, savedInstanceState)
     adapter = ScannedResultAdapter()
-    binding.recyclerView.adapter = adapter
+    if (!binding.recyclerView.isVisible) {
+      binding.recyclerView.isVisible = true
+    }
     binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    binding.recyclerView.adapter = adapter
     adapter.setScanResults(results)
     binding.closeButton.setOnClickListener {
       dialog?.dismiss()
