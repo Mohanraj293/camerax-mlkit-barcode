@@ -4,20 +4,21 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.lazymohan.cameraxmlkit.bottom_sheet.ScannedResultAdapter.ViewHolder
 import com.lazymohan.cameraxmlkit.databinding.ItemBarcodeResultBinding
 
 /**
  * Created by Mohanraj R on 21/12/22.
  */
-class ScannedResultAdapter: RecyclerView.Adapter<ViewHolder>() {
+class ScannedResultAdapter : Adapter<ViewHolder>() {
 
-  private var scanResults = mutableListOf<ScanResultData>()
+  private val scanResults = mutableListOf<ScanResultData>()
 
   @SuppressLint("NotifyDataSetChanged")
-  fun setScanResults(scanResultData: MutableList<ScanResultData>) {
-    this.scanResults.clear()
-    this.scanResults.addAll(scanResultData)
+  fun setScanResults(scanResultData: List<ScanResultData>) {
+    scanResults.clear()
+    scanResults.addAll(scanResultData)
     notifyDataSetChanged()
   }
 
@@ -37,7 +38,7 @@ class ScannedResultAdapter: RecyclerView.Adapter<ViewHolder>() {
 
   override fun getItemCount() = scanResults.size
 
-  inner class ViewHolder(private val binding: ItemBarcodeResultBinding): RecyclerView.ViewHolder(binding.root) {
+  class ViewHolder(private val binding: ItemBarcodeResultBinding): RecyclerView.ViewHolder(binding.root) {
     fun setData(scanResultData: ScanResultData) {
       binding.tvItem.text = scanResultData.item
     }

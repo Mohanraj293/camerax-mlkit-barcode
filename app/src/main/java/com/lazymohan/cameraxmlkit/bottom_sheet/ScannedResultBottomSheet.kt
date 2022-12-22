@@ -1,5 +1,7 @@
 package com.lazymohan.cameraxmlkit.bottom_sheet
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +43,12 @@ class ScannedResultBottomSheet : BottomSheetDialogFragment() {
     adapter.setScanResults(results)
     binding.closeButton.setOnClickListener {
       dialog?.dismiss()
+    }
+    binding.finishBtn.setOnClickListener {
+      val intent = Intent()
+      intent.putParcelableArrayListExtra("value", results)
+      activity?.setResult(RESULT_OK, intent)
+      activity?.finish()
     }
     binding.headerTitle.text = getString(string.scanned_items, results.size)
   }

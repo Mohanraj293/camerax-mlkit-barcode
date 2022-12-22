@@ -8,7 +8,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.PorterDuff.Mode.CLEAR
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
@@ -16,18 +20,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.lazymohan.cameraxmlkit.utils.CountListener
 import com.lazymohan.cameraxmlkit.R.string
 import com.lazymohan.cameraxmlkit.bottom_sheet.ScanResultData
 import com.lazymohan.cameraxmlkit.barcode.BarcodeAnalyser.ResultArray
 import com.lazymohan.cameraxmlkit.bottom_sheet.ScannedResultBottomSheet
 import com.lazymohan.cameraxmlkit.databinding.FragmentCameraxBinding
+import com.lazymohan.cameraxmlkit.utils.vibratePhone
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.ExecutorService
@@ -106,7 +113,7 @@ class CameraxFragment : Fragment(), ResultArray {
       if (results.isNotEmpty()) {
         bottomSheetDialog = ScannedResultBottomSheet.newInstance()
         bottomSheetDialog?.updateResult(results)
-        bottomSheetDialog?.show(parentFragmentManager,"barcode")
+        bottomSheetDialog?.show(parentFragmentManager, "barcodeBottomSheet")
       } else {
         Toast.makeText(requireContext(), "No scanned items found", Toast.LENGTH_SHORT).show()
       }
@@ -118,16 +125,20 @@ class CameraxFragment : Fragment(), ResultArray {
     processCameraProvider.addListener(
       {
         val cameraProvider = processCameraProvider.get()
-        val previewUseCase = buildPreviewUseCase()
-        val imageAnalysis = buildImageAnalysisUseCase()
-        val useCaseGroup = UseCaseGroup.Builder()
-          .addUseCase(previewUseCase)
-          .addUseCase(imageAnalysis)
-          .build()
+        val useCaseGroup = useCaseGroupBuilder()
         cameraProvider.unbindAll()
         cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, useCaseGroup)
       }, ContextCompat.getMainExecutor(requireContext())
     )
+  }
+
+  private fun useCaseGroupBuilder(): UseCaseGroup {
+    val previewUseCase = buildPreviewUseCase()
+    val imageAnalysis = buildImageAnalysisUseCase()
+    return UseCaseGroup.Builder()
+      .addUseCase(previewUseCase)
+      .addUseCase(imageAnalysis)
+      .build()
   }
 
   private fun buildImageAnalysisUseCase(): ImageAnalysis {
@@ -150,7 +161,7 @@ class CameraxFragment : Fragment(), ResultArray {
       if (it) startCamera()
       else Toast.makeText(
         requireContext(),
-        "Permissions not granted by the user.",
+        "Permissions not granted by the user",
         Toast.LENGTH_SHORT
       ).show()
     }
@@ -199,7 +210,7 @@ class CameraxFragment : Fragment(), ResultArray {
   }
 
   companion object {
-    @JvmStatic fun newInstance() = CameraxFragment()
+    fun newInstance() = CameraxFragment()
   }
 
   override fun setResult(
@@ -208,6 +219,7 @@ class CameraxFragment : Fragment(), ResultArray {
   ) {
     requireActivity().runOnUiThread {
       binding.tvMultiScan.text = getString(string.scanned_items, count)
+      vibratePhone()
       this.results = resultArray
     }
   }

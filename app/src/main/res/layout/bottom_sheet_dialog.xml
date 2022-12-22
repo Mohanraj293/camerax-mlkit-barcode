@@ -5,14 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/cl_top"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="#F2F5F7"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      >
     <ImageView
         android:id="@+id/close_button"
         android:layout_width="wrap_content"
@@ -25,12 +17,11 @@
     <TextView
         android:id="@+id/header_title"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         android:text= "@string/scanned_items"
         android:textSize="18sp"
         android:gravity="left"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/finish_btn"
         app:layout_constraintStart_toEndOf="@+id/close_button"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,16 +37,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
-  </androidx.constraintlayout.widget.ConstraintLayout>
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyclerView"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/cl_top"
+      app:layout_constraintTop_toBottomOf="@+id/header_title"
       tools:listitem="@layout/item_barcode_result"
-      android:layout_marginBottom="200dp"
       />
 </androidx.constraintlayout.widget.ConstraintLayout>
