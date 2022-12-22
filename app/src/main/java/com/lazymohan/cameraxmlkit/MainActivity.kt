@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     val resultLauncher = registerForActivityResult(StartActivityForResult()) {
       if (it.resultCode == Activity.RESULT_OK) {
         if (it.data != null) {
-          val result = it.data!!.getParcelableArrayListExtra<ScanResultData>("value")
+          val result = it.data!!.getParcelableArrayListExtra<ScanResultData>(RESULT_STRING_ARRAY)
           if (result != null) {
             list.addAll(result)
           }

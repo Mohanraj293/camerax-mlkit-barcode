@@ -15,6 +15,8 @@ import com.lazymohan.cameraxmlkit.databinding.BottomSheetDialogBinding
 /**
  * Created by Mohanraj R on 21/12/22.
  */
+private const val RESULT_STRING_ARRAY = "resultvalues"
+
 class ScannedResultBottomSheet : BottomSheetDialogFragment() {
   private lateinit var binding: BottomSheetDialogBinding
   private lateinit var adapter: ScannedResultAdapter
@@ -46,7 +48,7 @@ class ScannedResultBottomSheet : BottomSheetDialogFragment() {
     }
     binding.finishBtn.setOnClickListener {
       val intent = Intent()
-      intent.putParcelableArrayListExtra("value", results)
+      intent.putParcelableArrayListExtra(RESULT_STRING_ARRAY, results)
       activity?.setResult(RESULT_OK, intent)
       activity?.finish()
     }
