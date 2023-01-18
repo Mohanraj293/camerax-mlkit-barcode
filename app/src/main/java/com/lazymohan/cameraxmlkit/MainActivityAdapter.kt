@@ -15,16 +15,18 @@ import com.lazymohan.cameraxmlkit.databinding.LayoutMainItemBinding
 class MainActivityAdapter : Adapter<MainActivityAdapter.ViewHolder>() {
 
   private val homeLists = mutableListOf<ScanResultData>()
-  private val lists = mutableListOf<ScanResultData>()
+  val lists = mutableListOf<ScanResultData>()
 
-  class ViewHolder(private val binding: LayoutMainItemBinding) : RecyclerView.ViewHolder(
+  inner class ViewHolder(private val binding: LayoutMainItemBinding) : RecyclerView.ViewHolder(
     binding.root) {
     fun setData(item: ScanResultData) {
       binding.textView.text = item.item
+      checkIfMatch(item,this)
     }
-
-    private fun checkIfMatch() {
-
+    private fun checkIfMatch(item: ScanResultData, holder: ViewHolder) {
+      if (lists.contains(item)) {
+        holder.binding.checkBox.isChecked = true
+      }
     }
   }
 
@@ -35,9 +37,11 @@ class MainActivityAdapter : Adapter<MainActivityAdapter.ViewHolder>() {
     notifyDataSetChanged()
   }
 
+  @SuppressLint("NotifyDataSetChanged")
   fun setResultData(list: List<ScanResultData>) {
     lists.clear()
     lists.addAll(list)
+    notifyDataSetChanged()
   }
 
   override fun getItemCount() = homeLists.size

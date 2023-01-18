@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
     ScanResultData("hello 3"),
     ScanResultData("hello 4"),
     ScanResultData("hello 5"),
-    ScanResultData("hello 8"),
     ScanResultData("hello 6"),
     ScanResultData("hello 7"),
+    ScanResultData("hello 8"),
   )
   private lateinit var adapter: MainActivityAdapter
 
