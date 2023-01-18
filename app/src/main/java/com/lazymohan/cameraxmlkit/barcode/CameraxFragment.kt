@@ -10,10 +10,6 @@ import android.graphics.PixelFormat
 import android.graphics.PorterDuff.Mode.CLEAR
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.os.CombinedVibration
-import android.os.VibrationEffect
-import android.os.VibratorManager
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
 import android.view.View
@@ -26,14 +22,15 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import com.lazymohan.cameraxmlkit.utils.CountListener
+import androidx.fragment.app.Fragment
 import com.lazymohan.cameraxmlkit.R.string
-import com.lazymohan.cameraxmlkit.bottom_sheet.ScanResultData
 import com.lazymohan.cameraxmlkit.barcode.BarcodeAnalyser.ResultArray
+import com.lazymohan.cameraxmlkit.bottom_sheet.ScanResultData
 import com.lazymohan.cameraxmlkit.bottom_sheet.ScannedResultBottomSheet
 import com.lazymohan.cameraxmlkit.databinding.FragmentCameraxBinding
+import com.lazymohan.cameraxmlkit.utils.CountListener
 import com.lazymohan.cameraxmlkit.utils.vibratePhone
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +42,7 @@ class CameraxFragment : Fragment(), ResultArray {
   private lateinit var binding: FragmentCameraxBinding
   private lateinit var cameraExecutor: ExecutorService
   private lateinit var barcodeAnalyser: BarcodeAnalyser
+  private lateinit var previewView: PreviewView
   private var bottomSheetDialog: ScannedResultBottomSheet? = null
   private var countListener: CountListener? = null
   private var left: Int = 0
@@ -102,8 +100,7 @@ class CameraxFragment : Fragment(), ResultArray {
           p1: Int,
           p2: Int,
           p3: Int,
-        ) {
-        }
+        ) {}
 
         override fun surfaceDestroyed(holder: SurfaceHolder) {}
       })
@@ -118,6 +115,7 @@ class CameraxFragment : Fragment(), ResultArray {
         Toast.makeText(requireContext(), "No scanned items found", Toast.LENGTH_SHORT).show()
       }
     }
+    previewView = binding.previewView
   }
 
   private fun startCamera() {
@@ -134,11 +132,14 @@ class CameraxFragment : Fragment(), ResultArray {
 
   private fun useCaseGroupBuilder(): UseCaseGroup {
     val previewUseCase = buildPreviewUseCase()
-    val imageAnalysis = buildImageAnalysisUseCase()
-    return UseCaseGroup.Builder()
-      .addUseCase(previewUseCase)
-      .addUseCase(imageAnalysis)
-      .build()
+    return UseCaseGroup.Builder().apply {
+      setViewPort(previewView.viewPort!!)
+      addUseCase(previewUseCase)
+      if (this@CameraxFragment::barcodeAnalyser.isInitialized) {
+        val imageAnalysis = buildImageAnalysisUseCase()
+        addUseCase(imageAnalysis)
+      }
+    }.build()
   }
 
   private fun buildImageAnalysisUseCase(): ImageAnalysis {
@@ -151,9 +152,11 @@ class CameraxFragment : Fragment(), ResultArray {
   }
 
   private fun buildPreviewUseCase(): Preview {
-    return Preview.Builder()
-      .build()
-      .also { it.setSurfaceProvider(binding.previewView.surfaceProvider) }
+    if (!this::previewView.isInitialized) {
+      throw IllegalStateException("You should add at least a preview view to use this fragment.")
+    }
+    return Preview.Builder().build()
+      .also { it.setSurfaceProvider(previewView.surfaceProvider) }
   }
 
   private fun requestPermission() {
@@ -179,11 +182,16 @@ class CameraxFragment : Fragment(), ResultArray {
     }
   }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    cameraExecutor.shutdown()
+  }
+
   private fun drawOverLay(
     holder: SurfaceHolder,
   ) {
-    val height = binding.previewView.height
-    val width = binding.previewView.width
+    val height = previewView.height
+    val width = previewView.width
 
     diameter = width
     if (height < width) {
@@ -213,6 +221,7 @@ class CameraxFragment : Fragment(), ResultArray {
     fun newInstance() = CameraxFragment()
   }
 
+  @RequiresApi(VERSION_CODES.O)
   override fun setResult(
     resultArray: ArrayList<ScanResultData>,
     count: Int,

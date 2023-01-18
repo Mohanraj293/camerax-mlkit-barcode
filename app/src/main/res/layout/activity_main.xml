@@ -6,26 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     >
-  <TextView
-      android:id="@+id/result_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Scan Results"
-      android:gravity="center"
-      android:textSize="25dp"
-      android:textStyle="italic"
-      app:layout_constraintBottom_toTopOf="@+id/scan_button"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-  <com.google.android.material.button.MaterialButton
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/scan_button"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Scan"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      android:contentDescription="Scan"
+      android:src="@drawable/ic_baseline_document_scanner_24"
+      app:tint="@color/white"
+      android:layout_margin="20dp"
+      />
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvHomeItems"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      tools:listitem="@layout/layout_main_item"
       />
 </androidx.constraintlayout.widget.ConstraintLayout>

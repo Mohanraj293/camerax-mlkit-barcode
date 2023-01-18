@@ -6,7 +6,6 @@ import com.lazymohan.cameraxmlkit.R.id
 import com.lazymohan.cameraxmlkit.databinding.ActivityCameraxBinding
 
 class ActivityCamerax : AppCompatActivity() {
-
   private lateinit var binding: ActivityCameraxBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {

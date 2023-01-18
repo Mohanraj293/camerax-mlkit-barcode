@@ -49,8 +49,8 @@ class ScannedResultBottomSheet : BottomSheetDialogFragment() {
     binding.finishBtn.setOnClickListener {
       val intent = Intent()
       intent.putParcelableArrayListExtra(RESULT_STRING_ARRAY, results)
-      activity?.setResult(RESULT_OK, intent)
-      activity?.finish()
+      requireActivity().setResult(RESULT_OK, intent)
+      requireActivity().finish()
     }
     binding.headerTitle.text = getString(string.scanned_items, results.size)
   }
